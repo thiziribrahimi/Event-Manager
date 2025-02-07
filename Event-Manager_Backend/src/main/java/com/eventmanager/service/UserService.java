@@ -41,4 +41,27 @@ public class UserService {
         // Enregistre l'utilisateur dans la base de données
         return userRepository.save(user);
     }
+    
+    /**
+     * Authentifie un utilisateur.
+     *
+     * @param email    Email de l'utilisateur
+     * @param password Mot de passe de l'utilisateur (en clair)
+     * @return L'utilisateur authentifié ou null si l'authentification échoue
+     */
+    public User loginUser(String email, String password) {
+    	
+        // Recherche l'utilisateur par email
+        User user = userRepository.findByEmail(email);
+        
+        if (user != null) {
+            // Vérifie si le mot de passe correspond (en comparant avec le mot de passe chiffré)
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                // Authentification réussie
+                return user;
+            }
+        }
+        // Authentification échouée
+        return null;
+    }
 }
