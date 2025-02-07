@@ -64,4 +64,14 @@ public class UserService {
         // Authentification échouée
         return null;
     }
+    
+    /**
+     * Trouve un utilisateur par email.
+     *
+     * @param email Email de l'utilisateur
+     * @return L'utilisateur ou null s'il n'existe pas
+     */
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }

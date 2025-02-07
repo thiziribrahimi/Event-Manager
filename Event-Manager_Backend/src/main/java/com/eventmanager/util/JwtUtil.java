@@ -32,4 +32,34 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS512, secret) // Algorithme et clé secrète
                 .compact();
     }
+    
+    /**
+     * Extrait l'email d'un token JWT.
+     *
+     * @param token Le token JWT
+     * @return L'email contenu dans le token
+     */
+    public String getEmailFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    /**
+     * Valide un token JWT.
+     *
+     * @param token Le token JWT
+     * @return true si le token est valide, false sinon
+     */
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            return true; // Le token est valide
+        } catch (Exception e) {
+            // Le token est invalide ou expiré
+            return false;
+        }
+    }
 }
