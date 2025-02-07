@@ -3,11 +3,13 @@ package com.eventmanager.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eventmanager.model.Event;
+import com.eventmanager.model.EventResponse;
 import com.eventmanager.model.User;
 import com.eventmanager.repository.EventRepository;
 
@@ -17,11 +19,16 @@ public class EventService {
 	@Autowired
     private EventRepository eventRepository;
 	
-    public Event createEvent(String title, String description, LocalDate date, String location, User creator) {
+    public EventResponse createEvent(String title, String description, LocalDate date, String location, User creator) {
         
     	Event event = new Event(title, date, location, description, creator);
+    	
+    	Event eventCreated = eventRepository.save(event);
+    	
+    	return new EventResponse(eventCreated.getTitle(), eventCreated.getDate(), eventCreated.getLocation(),
+    			eventCreated.getDescription(), eventCreated.getCreator().getName(),
+    			eventCreated.getCreator().getEmail());
         
-    	return eventRepository.save(event);
     }
     
  // Supprimer un événement
@@ -35,21 +42,36 @@ public class EventService {
     }
     
  // Mettre à jour un événement
-    public Event updateEvent(Long eventId, String title, String description, LocalDate date, String location, User creator) {
-        Optional<Event> existingEvent = eventRepository.findById(eventId);
-        if (existingEvent.isPresent() && existingEvent.get().getCreator().getId().equals(creator.getId())) {
+    public EventResponse updateEvent(Long eventId, String title, String description, LocalDate date, String location, User creator) {
+        
+    	Optional<Event> existingEvent = eventRepository.findById(eventId);
+        
+    	if (existingEvent.isPresent() && existingEvent.get().getCreator().getId().equals(creator.getId())) {
             Event event = existingEvent.get();
             event.setTitle(title);
             event.setDescription(description);
             event.setDate(date);
             event.setLocation(location);
-            return eventRepository.save(event);
+            
+            Event eventUpdated = eventRepository.save(event);
+            
+            return new EventResponse(eventUpdated.getTitle(), eventUpdated.getDate(), eventUpdated.getLocation(),
+        			eventUpdated.getDescription(), eventUpdated.getCreator().getName(),
+        			eventUpdated.getCreator().getEmail()); 
         }
+        
         return null;
     }
 
  // Retourner tous les événements
-    public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+    public List<EventResponse> getAllEvents() {
+ 
+    	List<Event> listEvents = eventRepository.findAll();
+    	return listEvents.stream()
+                		 .map(event -> new EventResponse(event.getTitle(), event.getDate(), event.getLocation(),
+                				 event.getDescription(), event.getCreator().getName(),
+                				 event.getCreator().getEmail()
+                			 ))
+                		 .collect(Collectors.toList());
     }
 }
