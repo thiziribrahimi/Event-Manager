@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eventmanager.model.Event;
 import com.eventmanager.model.EventResponse;
+import com.eventmanager.model.RegistrationRequest;
 import com.eventmanager.model.User;
 import com.eventmanager.service.EventService;
+import com.eventmanager.service.RegistrationForEventService;
+import com.eventmanager.service.UserService;
 
 @RestController
 @RequestMapping("/events")
@@ -27,6 +31,12 @@ public class EventController {
 
 	@Autowired
 	private EventService eventService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private RegistrationForEventService registrationForEventService;
 	
 	@PostMapping
     public ResponseEntity<EventResponse> createEvent(@RequestBody Event event, Principal principal) {
@@ -68,7 +78,6 @@ public class EventController {
         }
     }
 	
-	// Mettre à jour un événement
     @PutMapping("/{id}")
     public ResponseEntity<EventResponse> updateEvent(@PathVariable Long id, @RequestBody Event event, Principal principal) {
     	
@@ -82,10 +91,55 @@ public class EventController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
-    // Retourner tous les événements
+
     @GetMapping
     public ResponseEntity<List<EventResponse>> getAllEvents() {
 
         return ResponseEntity.ok(eventService.getAllEvents());
+    }
+    
+ // Endpoint pour s'inscrire à un événement
+    @PostMapping("/register")
+    public ResponseEntity<?> registerForEvent(@RequestBody RegistrationRequest request, Principal principal) {
+        
+    	if (principal == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        
+        // Caster principal en UsernamePasswordAuthenticationToken
+        Authentication auth = (Authentication) principal;
+        User curentUser = (User) auth.getPrincipal();
+
+        if (curentUser == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        
+    	if (registrationForEventService.registerForEvent(request.getEventId(), curentUser)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    // Endpoint pour se désinscrire d'un événement
+    @Transactional
+    @PostMapping("/unregister")
+    public ResponseEntity<?> unregisterForEvent(@RequestBody RegistrationRequest request, Principal principal) {
+        
+    	if (principal == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        
+        // Caster principal en UsernamePasswordAuthenticationToken
+        Authentication auth = (Authentication) principal;
+        User curentUser = (User) auth.getPrincipal();
+
+        if (curentUser == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        
+    	if (registrationForEventService.unregisterForEvent(request.getEventId(), curentUser)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
