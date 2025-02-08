@@ -1,9 +1,13 @@
 package com.eventmanager.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eventmanager.model.Event;
+import com.eventmanager.model.EventResponse;
 import com.eventmanager.model.RegistrationForEvent;
 import com.eventmanager.model.User;
 import com.eventmanager.repository.EventRepository;
@@ -46,5 +50,21 @@ public class RegistrationForEventService {
         registrationForEventRepository.deleteByEventAndUser(event, user);
         
         return true;
+    }
+    
+    public List<EventResponse> getRegisteredEvents(User user) {
+    	List<RegistrationForEvent> listRegistrationForEvent = registrationForEventRepository.findByUser(user);
+    	
+    	List<Event> listEvents = listRegistrationForEvent
+    								.stream()
+    								.map(RegistrationForEvent::getEvent)
+    								.collect(Collectors.toList());
+    	
+    	return listEvents.stream()
+				 .map(event -> new EventResponse(event.getTitle(), event.getDate(), event.getLocation(),
+					  event.getDescription(), event.getCreator().getName(),
+					  event.getCreator().getEmail()
+					 ))
+				 .collect(Collectors.toList());
     }
 }

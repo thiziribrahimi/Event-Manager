@@ -1,5 +1,7 @@
 package com.eventmanager.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.eventmanager.model.Event;
@@ -11,4 +13,6 @@ public interface RegistrationForEventRepository extends JpaRepository<Registrati
     boolean existsByEventAndUser(Event event, User user);
     
     void deleteByEventAndUser(Event event, User user);
+    
+    List<RegistrationForEvent> findByUser(User user);
 }
