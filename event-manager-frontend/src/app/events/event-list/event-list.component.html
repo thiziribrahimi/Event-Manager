@@ -1,0 +1,20 @@
+<h2>Liste des Événements</h2>
+<table>
+  <tr>
+    <th>Titre</th>
+    <th>Description</th>
+    <th>Date</th>
+    <th>Lieu</th>
+    <th>Actions</th>
+  </tr>
+  <tr *ngFor="let event of events">
+    <td>{{ event.title }}</td>
+    <td>{{ event.description }}</td>
+    <td>{{ event.date }}</td>
+    <td>{{ event.location }}</td>
+    <td>
+      <button (click)="register(event.eventId)" class="register">S'inscrire</button>
+      <button (click)="unregister(event.eventId)" class="unregister">Se désinscrire</button>
+    </td>
+  </tr>  
+</table>

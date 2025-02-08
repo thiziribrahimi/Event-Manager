@@ -29,9 +29,10 @@ public class AuthenticationController {
     	User user = userService.registerUser(userToCreate.getName(), userToCreate.getEmail(), userToCreate.getPassword());
     	
         if (user != null) {
-            return new ResponseEntity<>("Utilisateur enregistré avec succès !", HttpStatus.CREATED);
+        	return ResponseEntity.ok("Utilisateur enregistré avec succès !");
         } else {
-            return new ResponseEntity<>("L'utilisateur avec cet email existe déjà.", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("L'utilisateur avec cet email existe déjà.");
         }
     }
     
