@@ -23,7 +23,6 @@ import com.eventmanager.model.RegistrationRequest;
 import com.eventmanager.model.User;
 import com.eventmanager.service.EventService;
 import com.eventmanager.service.RegistrationForEventService;
-import com.eventmanager.service.UserService;
 
 @RestController
 @RequestMapping("/events")
@@ -31,9 +30,6 @@ public class EventController {
 
 	@Autowired
 	private EventService eventService;
-	
-	@Autowired
-	private UserService userService;
 	
 	@Autowired
 	private RegistrationForEventService registrationForEventService;
@@ -141,5 +137,12 @@ public class EventController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    
+    // Endpoint pour récupérer les événements à venir
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<EventResponse>> getUpcomingEvents() {
+    	
+    	return ResponseEntity.ok(eventService.getUpcomingEvents());	
     }
 }

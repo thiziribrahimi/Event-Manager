@@ -74,4 +74,18 @@ public class EventService {
                 			 ))
                 		 .collect(Collectors.toList());
     }
+    
+    public List<EventResponse> getUpcomingEvents() {
+    	
+        LocalDate today = LocalDate.now();
+        
+        List<Event> listEvents = eventRepository.findByDateAfter(today);
+        
+        return listEvents.stream()
+        				 .map(event -> new EventResponse(event.getTitle(), event.getDate(), event.getLocation(),
+        					  event.getDescription(), event.getCreator().getName(),
+        					  event.getCreator().getEmail()
+        					 ))
+        				 .collect(Collectors.toList());
+    }
 }
