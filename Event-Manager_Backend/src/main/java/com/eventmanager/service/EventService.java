@@ -78,7 +78,6 @@ public class EventService {
     public List<EventResponse> getUpcomingEvents() {
     	
         LocalDate today = LocalDate.now();
-        
         List<Event> listEvents = eventRepository.findByDateAfter(today);
         
         return listEvents.stream()
@@ -87,5 +86,17 @@ public class EventService {
         					  event.getCreator().getEmail()
         					 ))
         				 .collect(Collectors.toList());
+    }
+    
+    // Méthode pour récupérer les événements créés par un utilisateur
+    public List<EventResponse> getCreatedEvents(User user) {
+    	List<Event> listEvents = eventRepository.findByCreator(user);
+    	
+    	return listEvents.stream()
+				 .map(event -> new EventResponse(event.getTitle(), event.getDate(), event.getLocation(),
+					  event.getDescription(), event.getCreator().getName(),
+					  event.getCreator().getEmail()
+					 ))
+				 .collect(Collectors.toList());
     }
 }

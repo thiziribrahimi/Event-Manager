@@ -150,18 +150,31 @@ public class EventController {
     @GetMapping("/registered")
     public ResponseEntity<List<EventResponse>> getRegisteredEvents(Principal principal) {
     	
-    	if (principal == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    	User curentUser = getCurrentUser(principal);        
+        
+        return ResponseEntity.ok(registrationForEventService.getRegisteredEvents(curentUser));
+    }
+    
+    // Endpoint pour récupérer les événements créés par l'utilisateur
+    @GetMapping("/createdevents")
+    public ResponseEntity<List<EventResponse>> getCreatedEvents(Principal principal) {
+    	User curentUser = getCurrentUser(principal); 
+        
+    	if (curentUser == null) {
+    		new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    	}
+        return ResponseEntity.ok(eventService.getCreatedEvents(curentUser));
+    }
+
+	private User getCurrentUser(Principal principal) {
+		if (principal == null) {
+            return null;
         }
         
         // Caster principal en UsernamePasswordAuthenticationToken
         Authentication auth = (Authentication) principal;
         User curentUser = (User) auth.getPrincipal();
 
-        if (curentUser == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }        
-        
-        return ResponseEntity.ok(registrationForEventService.getRegisteredEvents(curentUser));
-    }
+		return curentUser;
+	}
 }
