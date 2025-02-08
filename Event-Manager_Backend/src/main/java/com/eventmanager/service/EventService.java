@@ -27,7 +27,7 @@ public class EventService {
     	
     	return new EventResponse(eventCreated.getTitle(), eventCreated.getDate(), eventCreated.getLocation(),
     			eventCreated.getDescription(), eventCreated.getCreator().getName(),
-    			eventCreated.getCreator().getEmail(), eventCreated.getId());
+    			eventCreated.getCreator().getEmail(), eventCreated.getId(), eventCreated.getCreator().getId());
         
     }
     
@@ -57,7 +57,7 @@ public class EventService {
             
             return new EventResponse(eventUpdated.getTitle(), eventUpdated.getDate(), eventUpdated.getLocation(),
         			eventUpdated.getDescription(), eventUpdated.getCreator().getName(),
-        			eventUpdated.getCreator().getEmail(), eventUpdated.getId()); 
+        			eventUpdated.getCreator().getEmail(), eventUpdated.getId(), eventUpdated.getCreator().getId()); 
         }
         
         return null;
@@ -70,7 +70,7 @@ public class EventService {
     	return listEvents.stream()
                 		 .map(event -> new EventResponse(event.getTitle(), event.getDate(), event.getLocation(),
                 				 event.getDescription(), event.getCreator().getName(),
-                				 event.getCreator().getEmail(), event.getId()
+                				 event.getCreator().getEmail(), event.getId(), event.getCreator().getId()
                 			 ))
                 		 .collect(Collectors.toList());
     }
@@ -83,7 +83,7 @@ public class EventService {
         return listEvents.stream()
         				 .map(event -> new EventResponse(event.getTitle(), event.getDate(), event.getLocation(),
         					  event.getDescription(), event.getCreator().getName(),
-        					  event.getCreator().getEmail(), event.getId()
+        					  event.getCreator().getEmail(), event.getId(), event.getCreator().getId()
         					 ))
         				 .collect(Collectors.toList());
     }
@@ -95,7 +95,7 @@ public class EventService {
     	return listEvents.stream()
 				 .map(event -> new EventResponse(event.getTitle(), event.getDate(), event.getLocation(),
 					  event.getDescription(), event.getCreator().getName(),
-					  event.getCreator().getEmail(), event.getId()
+					  event.getCreator().getEmail(), event.getId(), event.getCreator().getId()
 					 ))
 				 .collect(Collectors.toList());
     }

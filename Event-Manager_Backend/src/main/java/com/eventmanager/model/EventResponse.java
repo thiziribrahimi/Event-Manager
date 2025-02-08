@@ -11,12 +11,13 @@ public class EventResponse {
 	    private String description;
 	    private String nameCreator;
 	    private String emailCreator;
+	    private Long creatorId; 
 	    
 	    public EventResponse(){
 	    	
 	    }
 	    
-		public EventResponse(String title, LocalDate date, String location, String description, String nameCreator, String emailCreator, Long eventId) {
+		public EventResponse(String title, LocalDate date, String location, String description, String nameCreator, String emailCreator, Long eventId, Long creatorId) {
 			this.title = title;
 			this.date = date;
 			this.location = location;
@@ -24,6 +25,7 @@ public class EventResponse {
 			this.nameCreator = nameCreator;
 			this.emailCreator = emailCreator;
 			this.eventId = eventId;
+			this.creatorId = creatorId;
 		}
 
 		public String getTitle() {
@@ -80,5 +82,13 @@ public class EventResponse {
 
 		public void setEmailCreator(String emailCreator) {
 			this.emailCreator = emailCreator;
-		} 
+		}
+
+		public Long getCreatorId() {
+			return creatorId;
+		}
+
+		public void setCreatorId(Long creatorId) {
+			this.creatorId = creatorId;
+		}
 }

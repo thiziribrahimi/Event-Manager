@@ -22,15 +22,21 @@ export class LoginComponent {
 
   login() {
     this.userService.login(this.credentials).subscribe(response => {
-      this.userService.saveToken(response.token); // Stocker le token après la connexion
-      console.log('Token sauvegardé :', response.token);
-      this.router.navigate(['/my-registrations']).then(success => { // Redirection vers la page des inscriptions
-        if (success) {
-          console.log('Redirection réussie vers /my-registrations');
-        } else {
-          console.error('Erreur de redirection vers /my-registrations');
-        }
-      });
+      if (response.token && response.userId) {
+        this.userService.saveToken(response.token); // Stocker le token après la connexion
+        this.userService.saveUserId(response.userId); // Stocker l'ID de l'utilisateur après la connexion
+        console.log('Token sauvegardé :', response.token);
+        console.log('ID Utilisateur sauvegardé :', response.userId);
+        this.router.navigate(['/my-registrations']).then(success => { // Redirection vers la page des inscriptions
+          if (success) {
+            console.log('Redirection réussie vers /my-registrations');
+          } else {
+            console.error('Erreur de redirection vers /my-registrations');
+          }
+        });
+      } else {
+        console.error('Réponse invalide du serveur:', response);
+      }
     }, error => {
       console.error('Erreur de connexion', error);
     });

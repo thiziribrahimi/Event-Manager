@@ -13,6 +13,7 @@ export class EventService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = this.userService.getToken();
+    console.log("getAuthHeaders token ==> "+ token)
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -58,6 +59,7 @@ export class EventService {
   // Méthode pour supprimer un événement
   deleteEvent(id: number): Observable<any> {
     const headers = this.getAuthHeaders();
+    console.log('demande de suppression')
     return this.http.delete(`${this.apiUrl}/${id}`, { headers });
   }
 

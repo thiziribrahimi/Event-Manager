@@ -13,9 +13,12 @@ export class UserService {
 
   // Méthode pour se connecter
   login(credentials: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, credentials, { responseType: 'text' }).pipe(
+    return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       map((response: any) => {
-        return { token: response };
+        console.log('Réponse de login:', response); // Log pour débogage
+        this.saveToken(response.token);
+        this.saveUserId(response.userId);
+        return response;
       })
     );
   }
@@ -38,5 +41,23 @@ export class UserService {
   // Méthode pour récupérer le JWT
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  getUserEmail(): string | null {
+    const token = this.getToken();
+    if (token) {
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      return decodedToken.email; // Assumer que l'email de l'utilisateur est stocké dans le champ 'email'
+    }
+    return null;
+  }
+
+  saveUserId(userId: string): void {
+    localStorage.setItem('userId', userId); // Sauvegarder l'ID de l'utilisateur dans le stockage local
+  }
+
+  // Méthode pour récupérer le JWT
+  getUserId(): string | null {
+    return localStorage.getItem('userId');
   }
 }

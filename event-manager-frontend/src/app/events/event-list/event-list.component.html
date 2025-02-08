@@ -15,6 +15,10 @@
     <td>
       <button (click)="register(event.eventId)" class="register">S'inscrire</button>
       <button (click)="unregister(event.eventId)" class="unregister">Se désinscrire</button>
+      <ng-container *ngIf="isEventCreator(event)">
+        <button (click)="editEvent(event.eventId)" class="edit">Éditer</button>
+        <button (click)="deleteEvent(event.eventId)" class="delete">Supprimer</button>
+      </ng-container>
     </td>
   </tr>  
 </table>

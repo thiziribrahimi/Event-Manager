@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
+import { UserService } from '../../services/user.service'
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -13,13 +14,32 @@ import { RouterModule } from '@angular/router';
 })
 export class EventListComponent implements OnInit {
   events: any[] = [];
+  currentUserId: string | null = null;
 
-  constructor(private eventService: EventService) {}
+  constructor(private eventService: EventService, private userService: UserService) {}
 
   ngOnInit(): void {
+    this.currentUserId = this.userService.getUserId();
     this.eventService.getAllEvents().subscribe(events => {
       console.log('Événements récupérés :', events);
       this.events = events;
+    });
+  }
+
+  editEvent(eventId: number): void {
+    console.log('Éditer l\'événement avec ID :', eventId);
+  }
+
+  deleteEvent(eventId: number): void {
+    if (eventId === undefined) {
+      console.error('eventId est undefined');
+      return;
+    }
+    this.eventService.deleteEvent(eventId).subscribe(response => {
+      console.log('Suppression réussie :', response);
+      this.events = this.events.filter(event => event.id !== eventId);
+    }, error => {
+      console.error('Erreur de suppression', error);
     });
   }
 
@@ -44,5 +64,9 @@ export class EventListComponent implements OnInit {
     }, error => {
       console.error('Erreur lors de la désinscription', error);
     });
+  }
+
+  isEventCreator(event: any): boolean {
+    return event.creatorId.toString() === this.currentUserId;
   }
 }

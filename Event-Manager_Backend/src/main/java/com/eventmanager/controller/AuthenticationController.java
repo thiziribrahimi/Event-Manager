@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eventmanager.model.AuthResponse;
 import com.eventmanager.model.User;
 import com.eventmanager.model.UserCredentials;
 import com.eventmanager.service.UserService;
@@ -37,15 +38,16 @@ public class AuthenticationController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserCredentials userCredentials) {
+    public ResponseEntity<?> loginUser(@RequestBody UserCredentials userCredentials) {
 
         User user = userService.loginUser(userCredentials.getEmail(), userCredentials.getPassword());
         
         if (user != null) {
             // Génère un token JWT
             String token = jwtUtil.generateToken(userCredentials.getEmail());
+            
             // Retourne le token avec un statut 200 OK
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(new AuthResponse(token, user.getId()));
         } else {
             // Authentification échouée, retourne 401 Unauthorized
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

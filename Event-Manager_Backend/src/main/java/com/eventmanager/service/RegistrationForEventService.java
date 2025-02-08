@@ -63,7 +63,7 @@ public class RegistrationForEventService {
     	return listEvents.stream()
 				 .map(event -> new EventResponse(event.getTitle(), event.getDate(), event.getLocation(),
 					  event.getDescription(), event.getCreator().getName(),
-					  event.getCreator().getEmail(), event.getId()
+					  event.getCreator().getEmail(), event.getId(), event.getCreator().getId()
 					 ))
 				 .collect(Collectors.toList());
     }
